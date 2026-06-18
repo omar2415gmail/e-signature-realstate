@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>آثار العقارية — توقيع العقود</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --green:#0E4D4A; --greenDeep:#0A3633; --gold:#C9A24B; --goldSoft:#E7CF8E;
+  --sand:#F6F1E8; --ink:#1A1A17; --muted:#6B6A63; --line:#E4DCCB; --ok:#1F7A4D; --wa:#25D366;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Tajawal',system-ui,sans-serif;direction:rtl;color:var(--ink);min-height:100vh;
+  background:radial-gradient(120% 80% at 100% 0%,rgba(201,162,75,.10),transparent 55%),var(--sand);
+  padding:16px 13px 44px;-webkit-font-smoothing:antialiased;}
+.ar-shell{max-width:540px;margin:0 auto;}
+.brandbar{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+.brandmark{width:46px;height:46px;border-radius:13px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,var(--green),var(--greenDeep));box-shadow:0 6px 18px rgba(14,77,74,.28);}
+.brandmark span{font-family:'Amiri',serif;color:var(--goldSoft);font-size:25px;font-weight:700;}
+.brandtext .b1{font-weight:800;font-size:17px;letter-spacing:-.2px;}
+.brandtext .b2{font-size:12px;color:var(--muted);margin-top:1px;}
+.rolebar{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:11px;margin-bottom:14px;}
+.rolebar.host{background:rgba(14,77,74,.08);color:var(--green);border:1px solid rgba(14,77,74,.18);}
+.rolebar.client{background:rgba(201,162,75,.14);color:#8a6d1e;border:1px solid rgba(201,162,75,.4);}
+.rolebar .dot{width:8px;height:8px;border-radius:50%;background:currentColor;}
+.rolebar .sw{margin-inline-start:auto;font-weight:600;text-decoration:underline;cursor:pointer;font-size:12px;opacity:.85;background:none;border:none;color:inherit;font-family:inherit;}
+.steps{display:flex;gap:6px;margin:0 2px 16px;}
+.steps i{height:4px;flex:1;border-radius:3px;background:var(--line);transition:.35s;}
+.steps i.on{background:linear-gradient(90deg,var(--green),var(--gold));}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 18px;box-shadow:0 10px 30px rgba(26,26,23,.05);}
+.eyebrow{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:6px;}
+.h1{font-size:22px;font-weight:800;line-height:1.28;margin:0 0 8px;letter-spacing:-.3px;}
+.lead{color:var(--muted);font-size:14.5px;line-height:1.7;margin:0;}
+label.f{display:block;margin-top:15px;}
+.f .lab{font-size:13px;font-weight:600;margin-bottom:7px;display:block;}
+.f .lab em{color:var(--gold);font-style:normal;}
+.inp{width:100%;font-family:inherit;font-size:15px;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#FCFBF7;color:var(--ink);transition:.15s;}
+.inp:focus{outline:none;border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(14,77,74,.10);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.seg{display:flex;gap:7px;flex-wrap:wrap;}
+.seg button{flex:1;min-width:72px;font-family:inherit;font-weight:600;font-size:13.5px;padding:11px 6px;border-radius:11px;border:1.5px solid var(--line);background:#FCFBF7;color:var(--muted);cursor:pointer;}
+.seg button.on{border-color:var(--green);background:var(--green);color:#fff;box-shadow:0 5px 13px rgba(14,77,74,.22);}
+.aptpick{display:flex;flex-direction:column;gap:9px;}
+.aptpick .a{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:13px;cursor:pointer;background:#FCFBF7;}
+.aptpick .a.on{border-color:var(--green);background:#fff;box-shadow:0 5px 14px rgba(14,77,74,.10);}
+.aptpick .a .no{width:46px;height:46px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;background:linear-gradient(150deg,var(--green),var(--greenDeep));color:var(--goldSoft);}
+.aptpick .a .nm{font-weight:700;font-size:15px;}
+.aptpick .a .ct{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.aptpick .a .ck{margin-inline-start:auto;color:var(--green);font-weight:800;opacity:0;}
+.aptpick .a.on .ck{opacity:1;}
+.btn{width:100%;border:none;cursor:pointer;border-radius:14px;font-family:inherit;font-weight:700;font-size:15.5px;padding:15px;background:linear-gradient(135deg,var(--green),var(--greenDeep));color:#fff;box-shadow:0 8px 20px rgba(14,77,74,.30);transition:.2s;margin-top:18px;}
+.btn:active{transform:translateY(1px);}
+.btn.ghost{background:transparent;color:var(--green);box-shadow:none;border:1.5px solid var(--line);}
+.btn.wa{background:var(--wa);box-shadow:0 8px 20px rgba(37,211,102,.30);}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+.btnrow{display:flex;gap:10px;margin-top:18px;}
+.btnrow .btn{margin-top:0;}
+.summ{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
+.summ .r{display:flex;justify-content:space-between;font-size:14px;margin-top:9px;}
+.summ .r span{color:var(--muted);}
+.summ .r b{font-weight:700;}
+.summ .tot{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line);}
+.summ .tot b{font-size:21px;color:var(--green);}
+.linkbox{margin-top:16px;border:1.5px dashed var(--green);border-radius:14px;background:#F4FAF9;padding:14px;}
+.linkbox .lt{font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;}
+.linkbox .lv{font-family:ui-monospace,monospace;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 11px;word-break:break-all;color:#33403e;direction:ltr;text-align:left;}
+.linkbox .cp{margin-top:9px;display:flex;gap:8px;}
+.linkbox .cp button{flex:1;font-family:inherit;font-size:13px;font-weight:700;padding:10px;border-radius:10px;border:1.5px solid var(--green);background:#fff;color:var(--green);cursor:pointer;}
+.review{margin-top:4px;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.review .rh{background:linear-gradient(135deg,var(--green),var(--greenDeep));color:#fff;padding:13px 15px;}
+.review .rh .who{font-size:12px;color:var(--goldSoft);font-weight:700;}
+.review .rh .nm{font-size:16px;font-weight:800;margin-top:1px;}
+.review .rh .ph{font-size:12.5px;opacity:.85;margin-top:2px;}
+.review .rb{padding:6px 15px 14px;}
+.review .rb .r{display:flex;justify-content:space-between;font-size:13.5px;padding:9px 0;border-bottom:1px solid var(--line);}
+.review .rb .r:last-child{border-bottom:none;}
+.review .rb .r span{color:var(--muted);}
+.review .rb .r b{font-weight:700;}
+.review .rb .r b.big{color:var(--green);font-size:16px;}
+.contract{margin-top:4px;border:1px solid var(--line);border-radius:14px;background:#fff;max-height:290px;overflow-y:auto;padding:18px 16px;font-size:13px;line-height:1.85;}
+.contract h4{font-family:'Amiri',serif;text-align:center;font-size:18px;margin:0 0 3px;color:var(--greenDeep);}
+.contract .ctr{text-align:center;color:var(--muted);font-size:11.5px;margin-bottom:14px;}
+.contract .prty{background:#FBF8F0;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+.contract .prty .k{font-size:11px;color:var(--gold);font-weight:700;}
+.contract .prty .v{font-weight:600;}
+.contract .prty .s{font-weight:400;font-size:12px;color:var(--muted);}
+.contract ol{margin:8px 0;padding-inline-start:18px;}
+.contract ol li{margin-bottom:6px;color:#3a3a34;}
+.hl{color:var(--green);font-weight:700;}
+.sigwrap{position:relative;border:1.5px dashed var(--gold);border-radius:13px;background:#FFFDF7;height:170px;overflow:hidden;touch-action:none;margin-top:7px;}
+.sigwrap canvas{width:100%;height:100%;display:block;cursor:crosshair;}
+.sigwrap .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#C9BE9E;font-size:14px;pointer-events:none;}
+.sigwrap .line{position:absolute;left:18px;right:18px;bottom:34px;border-top:1px solid var(--line);}
+.sigtools{display:flex;justify-content:space-between;align-items:center;margin-top:9px;}
+.sigtools button{background:none;border:none;color:var(--muted);font-family:inherit;font-size:13px;cursor:pointer;text-decoration:underline;}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;cursor:pointer;}
+.agree input{margin-top:3px;width:18px;height:18px;accent-color:var(--green);flex:0 0 auto;}
+.agree span{font-size:13px;line-height:1.6;}
+.err{color:#B23B3B;font-size:12.5px;margin-top:8px;}
+.done{text-align:center;padding:8px 4px 2px;}
+.checkc{width:74px;height:74px;border-radius:50%;margin:6px auto 14px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#2aa869,var(--ok));box-shadow:0 10px 26px rgba(31,122,77,.35);animation:pop .45s ease;}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+.checkc svg{width:38px;height:38px;}
+.done h2{font-size:22px;font-weight:800;margin:0 0 6px;}
+.done p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 auto;max-width:330px;}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--green);border-radius:50%;margin:10px auto;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hostsig{margin-top:16px;border:1px solid var(--line);border-radius:13px;background:#FBF8F0;overflow:hidden;}
+.hostsig .hh{padding:12px 14px;font-size:12.5px;font-weight:700;color:var(--green);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.hostsig .hb{padding:0 14px 14px;}
+.hostsig .hb img{height:46px;}
+.fade{animation:fade .35s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.note{margin-top:18px;font-size:12px;color:var(--muted);line-height:1.7;text-align:center;}
+.note b{color:var(--green);}
+/* hidden printable A4 contract for PDF capture */
+#pdf-source{position:fixed;left:-99999px;top:0;width:794px;background:#fff;padding:54px 60px;color:#1A1A17;font-family:'Tajawal',sans-serif;}
+#pdf-source h3{font-family:'Amiri',serif;text-align:center;font-size:26px;margin:0 0 4px;color:#0A3633;}
+#pdf-source .sub{text-align:center;color:#6B6A63;font-size:14px;margin-bottom:26px;}
+#pdf-source .pblock{border:1px solid #E4DCCB;border-radius:10px;padding:14px 16px;margin-bottom:14px;}
+#pdf-source .pblock .k{font-size:13px;color:#C9A24B;font-weight:700;}
+#pdf-source .pblock .v{font-size:16px;font-weight:600;margin-top:2px;}
+#pdf-source .pblock .v small{font-weight:400;color:#6B6A63;font-size:13px;}
+#pdf-source p{font-size:15px;line-height:2;margin:14px 0;}
+#pdf-source ol{font-size:14.5px;line-height:1.9;padding-inline-start:22px;}
+#pdf-source ol li{margin-bottom:7px;}
+#pdf-source .sgrow{display:flex;justify-content:space-between;margin-top:40px;}
+#pdf-source .sg{text-align:center;width:46%;}
+#pdf-source .sg img{height:70px;display:block;margin:0 auto 6px;}
+#pdf-source .sg .ln{border-top:1.5px solid #1A1A17;padding-top:7px;font-weight:700;font-size:14px;}
+#pdf-source .sg .rl{font-size:12px;color:#6B6A63;margin-top:2px;}
+#pdf-source .pdfdate{text-align:center;color:#6B6A63;font-size:13px;margin-top:30px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useRef, useEffect } = React;
+
+const LESSOR = { name:"عمر الفاضل", role:"مؤجر فردي", phone:"0590102131" };
+const APTS = [
+  { id:"7B",   name:"شقة الياسمين",  no:"7B",   city:"الرياض — حي الياسمين" },
+  { id:"210C", name:"شقة المغرزات", no:"210C", city:"الرياض — حي المغرزات" },
+];
+const RENT = { daily:"يومي", weekly:"أسبوعي", monthly:"شهري" };
+const G_MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+const fmt = n => new Intl.NumberFormat("en-US").format(Math.round(n||0));
+const arDate = s => { if(!s) return "—"; const d=new Date(s); if(isNaN(d)) return s; return `${d.getDate()} ${G_MONTHS[d.getMonth()]} ${d.getFullYear()}م`; };
+const today = () => { const d=new Date(); return `${d.getDate()} ${G_MONTHS[d.getMonth()]} ${d.getFullYear()}م`; };
+
+function encode(obj){ try{ return encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(obj))))); }catch(e){ return ""; } }
+function decode(tok){ try{ return JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(tok))))); }catch(e){ return null; } }
+
+function App(){
+  const params = new URLSearchParams(location.search);
+  const tok = params.get("c");
+  const decoded = tok ? decode(tok) : null;
+
+  const [role,setRole] = useState(decoded ? "client" : "host");
+  const [hstep,setHstep] = useState(0);
+  const [cstep,setCstep] = useState(0);
+
+  const init = decoded || { apt:"7B", type:"daily", checkIn:"", checkOut:"", rate:"350", deposit:"500" };
+  const [r,setR] = useState({ apt:init.apt||"7B", type:init.type||"daily", checkIn:init.checkIn||"", checkOut:init.checkOut||"", rate:String(init.rate||"350"), deposit:String(init.deposit||"500") });
+  const [c,setC] = useState({ name:"", idType:"هوية وطنية", idNumber:"", nationality:"سعودي", phone:"" });
+  const [agree,setAgree] = useState(false);
+  const [sig,setSig] = useState(null);
+  const [hostSig,setHostSig] = useState(null);
+  const [err,setErr] = useState("");
+  const [copied,setCopied] = useState("");
+  const [status,setStatus] = useState("idle"); // idle|sending|done|error
+
+  useEffect(()=>{ try{ const s=localStorage.getItem("athar_host_sig"); if(s) setHostSig(s); }catch(e){} },[]);
+  const saveHostSig = (d)=>{ setHostSig(d); try{ if(d) localStorage.setItem("athar_host_sig",d); else localStorage.removeItem("athar_host_sig"); }catch(e){} };
+
+  const setRf=(k,v)=>setR(p=>({...p,[k]:v}));
+  const setCf=(k,v)=>setC(p=>({...p,[k]:v}));
+  const apt = APTS.find(a=>a.id===r.apt) || APTS[0];
+  const nights = (()=>{ if(!r.checkIn||!r.checkOut) return 0; const n=Math.round((new Date(r.checkOut)-new Date(r.checkIn))/86400000); return n>0?n:0; })();
+  const total = nights*(+r.rate||0);
+
+  const origin = location.origin + location.pathname;
+  const link = `${origin}?c=${encode({apt:r.apt,type:r.type,checkIn:r.checkIn,checkOut:r.checkOut,rate:r.rate,deposit:r.deposit})}`;
+  const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(`السلام عليكم 👋 هذا رابط توقيع عقد إيجار ${apt.name} (${apt.no}) عبر آثار العقارية:\n${link}\nالرجاء تعبئة بياناتك والتوقيع. شكراً 🌿`)}`;
+
+  const genLink = ()=>{ if(!r.checkIn||!r.checkOut){setErr("حدّد تاريخ الدخول والخروج.");return;} if(nights<=0){setErr("تاريخ الخروج لازم بعد الدخول.");return;} if(!(+r.rate>0)){setErr("أدخل سعر الليلة.");return;} setErr(""); setHstep(1); };
+  const copy=(t,w)=>{ navigator.clipboard&&navigator.clipboard.writeText(t); setCopied(w); setTimeout(()=>setCopied(""),1600); };
+  const toClientPreview=()=>{ setRole("client"); setCstep(0); setErr(""); window.scrollTo(0,0); };
+  const backToHost=()=>{ setRole("host"); setStatus("idle"); setErr(""); window.scrollTo(0,0); };
+  const cValidate=()=>{ if(!c.name.trim()||!c.idNumber.trim()||!c.phone.trim()){setErr("أكمل الاسم ورقم الهوية والجوال.");return;} setErr(""); setCstep(2); };
+
+  async function submit(){
+    if(!sig){setErr("التوقيع مطلوب.");return;}
+    if(!agree){setErr("لازم توافق على بنود العقد.");return;}
+    setErr(""); setStatus("sending"); setCstep(3); window.scrollTo(0,0);
+    try{
+      await (document.fonts ? document.fonts.ready : Promise.resolve());
+      await new Promise(r=>setTimeout(r,120));
+      const el = document.getElementById("pdf-source");
+      const canvas = await html2canvas(el, { scale:2, backgroundColor:"#ffffff", useCORS:true });
+      const img = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p","mm","a4");
+      const W=210; let H = canvas.height*W/canvas.width;
+      if(H>297) H=297;
+      pdf.addImage(img,"PNG",0,0,W,H,undefined,"FAST");
+      const base64 = pdf.output("datauristring").split(",")[1];
+      const res = await fetch("/api/send",{
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          pdfBase64: base64,
+          filename: `عقد-${apt.no}-${(c.name||"مستأجر").replace(/\s+/g,"_")}.pdf`,
+          subject: `عقد إيجار موقّع — ${apt.name} (${apt.no}) — ${c.name||"مستأجر"}`,
+          summaryHtml: `<div dir="rtl" style="font-family:sans-serif">وصل عقد إيجار موقّع جديد:<br><br>
+            <b>المستأجر:</b> ${c.name}<br>
+            <b>الهوية:</b> ${c.idType} ${c.idNumber}<br>
+            <b>الجوال:</b> ${c.phone}<br>
+            <b>الوحدة:</b> ${apt.name} (${apt.no})<br>
+            <b>المدة:</b> ${arDate(r.checkIn)} ← ${arDate(r.checkOut)} (${nights} ليالٍ)<br>
+            <b>الإجمالي:</b> ${fmt(total)} ر.س — <b>التأمين:</b> ${fmt(r.deposit)} ر.س<br><br>
+            العقد الموقّع مرفق بصيغة PDF.</div>`,
+        }),
+      });
+      if(res.ok) setStatus("done"); else setStatus("error");
+    }catch(e){ setStatus("error"); }
+  }
+
+  return (
+    <div className="ar-shell">
+      <div className="brandbar">
+        <div className="brandmark"><span>آ</span></div>
+        <div className="brandtext"><div className="b1">آثار العقارية</div><div className="b2">عقود الإيجار قصير المدى — توقيع إلكتروني</div></div>
+      </div>
+
+      {!decoded && (role==="host"
+        ? <div className="rolebar host"><span className="dot"></span> أنت الآن: المضيف (عمر){hstep===1 && <button className="sw" onClick={toClientPreview}>معاينة صفحة العميل ←</button>}</div>
+        : <div className="rolebar client"><span className="dot"></span> معاينة: ما يراه العميل<button className="sw" onClick={backToHost}>← رجوع لصفحة المضيف</button></div>
+      )}
+
+      {role==="host" && hstep===0 && (
+        <div className="card fade">
+          <div className="eyebrow">إنشاء عقد جديد</div>
+          <h1 className="h1">عبّي بيانات الإيجار</h1>
+          <p className="lead">اختر الوحدة وحدّد التفاصيل، ثم نولّد لك رابطاً ترسله للعميل.</p>
+
+          <label className="f"><span className="lab">الوحدة</span>
+            <div className="aptpick">
+              {APTS.map(a=>(
+                <div key={a.id} className={"a"+(r.apt===a.id?" on":"")} onClick={()=>setRf("apt",a.id)}>
+                  <div className="no">{a.no}</div>
+                  <div><div className="nm">{a.name}</div><div className="ct">{a.city}</div></div>
+                  <div className="ck">✓</div>
+                </div>
+              ))}
+            </div>
+          </label>
+
+          <label className="f"><span className="lab">نوع الإيجار</span>
+            <div className="seg">{Object.keys(RENT).map(k=><button key={k} className={r.type===k?"on":""} onClick={()=>setRf("type",k)}>{RENT[k]}</button>)}</div>
+          </label>
+
+          <div className="grid2" style={{marginTop:15}}>
+            <label className="f" style={{marginTop:0}}><span className="lab">تاريخ الدخول <em>*</em></span>
+              <input className="inp" type="date" value={r.checkIn} onChange={e=>setRf("checkIn",e.target.value)} /></label>
+            <label className="f" style={{marginTop:0}}><span className="lab">تاريخ الخروج <em>*</em></span>
+              <input className="inp" type="date" value={r.checkOut} onChange={e=>setRf("checkOut",e.target.value)} /></label>
+          </div>
+
+          <div className="grid2" style={{marginTop:15}}>
+            <label className="f" style={{marginTop:0}}><span className="lab">سعر الليلة (ر.س) <em>*</em></span>
+              <input className="inp" inputMode="numeric" value={r.rate} onChange={e=>setRf("rate",e.target.value.replace(/\D/g,""))} /></label>
+            <label className="f" style={{marginTop:0}}><span className="lab">مبلغ التأمين (ر.س)</span>
+              <input className="inp" inputMode="numeric" value={r.deposit} onChange={e=>setRf("deposit",e.target.value.replace(/\D/g,""))} /></label>
+          </div>
+
+          <div className="summ">
+            <div className="r"><span>عدد الليالي</span><b>{nights||"—"}</b></div>
+            <div className="r"><span>{fmt(r.rate)} × {nights||"—"} ليلة</span><b>{fmt(total)} ر.س</b></div>
+            <div className="r"><span>التأمين (مسترد)</span><b>{fmt(r.deposit)} ر.س</b></div>
+            <div className="r tot"><span>إجمالي الإيجار</span><b>{fmt(total)} ر.س</b></div>
+          </div>
+
+          {err && <div className="err">{err}</div>}
+          <HostSignatureCard sig={hostSig} onChange={saveHostSig} />
+          <button className="btn" onClick={genLink}>إنشاء رابط العميل</button>
+        </div>
+      )}
+
+      {role==="host" && hstep===1 && (
+        <div className="card fade">
+          <div className="eyebrow">جاهز للإرسال</div>
+          <h1 className="h1">رابط العقد جاهز</h1>
+          <p className="lead">أرسله للعميل. بيانات الإيجار محفوظة داخل الرابط — بدون أي قاعدة بيانات.</p>
+
+          <div className="review" style={{marginTop:16}}>
+            <div className="rb" style={{padding:"6px 15px 14px"}}>
+              <div className="r"><span>الوحدة</span><b>{apt.name} ({apt.no})</b></div>
+              <div className="r"><span>المدة</span><b>{nights} ليالٍ · {RENT[r.type]}</b></div>
+              <div className="r"><span>من — إلى</span><b style={{fontSize:12}}>{arDate(r.checkIn)} ← {arDate(r.checkOut)}</b></div>
+              <div className="r"><span>الإجمالي</span><b className="big">{fmt(total)} ر.س</b></div>
+            </div>
+          </div>
+
+          <div className="linkbox">
+            <div className="lt">🔗 رابط العميل</div>
+            <div className="lv">{link}</div>
+            <div className="cp"><button onClick={()=>copy(link,"link")}>{copied==="link"?"✓ تم النسخ":"نسخ الرابط"}</button></div>
+          </div>
+
+          <a href={waLink} target="_blank" rel="noreferrer" style={{textDecoration:"none"}}><button className="btn wa">إرسال الرابط للعميل عبر واتساب</button></a>
+          <button className="btn ghost" onClick={toClientPreview}>معاينة تجربة العميل</button>
+          <button className="btn ghost" onClick={()=>setHstep(0)} style={{marginTop:10}}>عقد جديد</button>
+        </div>
+      )}
+
+      {role==="client" && status!=="done" && status!=="error" && cstep<3 && (
+        <div className="steps">{[0,1,2].map(i=><i key={i} className={cstep>=i?"on":""} />)}</div>
+      )}
+
+      {role==="client" && cstep===0 && (
+        <div className="card fade">
+          <div className="eyebrow">دعوة لتوقيع عقد</div>
+          <h1 className="h1">يرجى مراجعة بيانات الإيجار</h1>
+          <p className="lead">تأكّد من التفاصيل التالية، ثم أكمل بياناتك ووقّع.</p>
+          <div className="review">
+            <div className="rh">
+              <div className="who">المؤجّر</div>
+              <div className="nm">{LESSOR.name}</div>
+              <div className="ph">{LESSOR.role} · جوال التواصل {LESSOR.phone}</div>
+            </div>
+            <div className="rb">
+              <div className="r"><span>الوحدة</span><b>{apt.name} — رقم {apt.no}</b></div>
+              <div className="r"><span>الموقع</span><b style={{fontSize:12.5}}>{apt.city}</b></div>
+              <div className="r"><span>نوع الإيجار</span><b>{RENT[r.type]}</b></div>
+              <div className="r"><span>الدخول</span><b style={{fontSize:12.5}}>{arDate(r.checkIn)}</b></div>
+              <div className="r"><span>الخروج</span><b style={{fontSize:12.5}}>{arDate(r.checkOut)}</b></div>
+              <div className="r"><span>عدد الليالي</span><b>{nights}</b></div>
+              <div className="r"><span>التأمين (مسترد)</span><b>{fmt(r.deposit)} ر.س</b></div>
+              <div className="r"><span>الإجمالي</span><b className="big">{fmt(total)} ر.س</b></div>
+            </div>
+          </div>
+          {err && <div className="err">{err}</div>}
+          <button className="btn" onClick={()=>{setErr("");setCstep(1);}}>البيانات صحيحة، أكمل</button>
+        </div>
+      )}
+
+      {role==="client" && cstep===1 && (
+        <div className="card fade">
+          <div className="eyebrow">الخطوة ١ من ٢</div>
+          <h1 className="h1">بياناتك الشخصية</h1>
+          <label className="f"><span className="lab">الاسم الكامل <em>*</em></span>
+            <input className="inp" value={c.name} onChange={e=>setCf("name",e.target.value)} placeholder="مثال: محمد بن عبدالله" /></label>
+          <label className="f"><span className="lab">نوع الهوية</span>
+            <div className="seg">{["هوية وطنية","إقامة"].map(t=><button key={t} className={c.idType===t?"on":""} onClick={()=>setCf("idType",t)}>{t}</button>)}</div>
+          </label>
+          <div className="grid2" style={{marginTop:15}}>
+            <label className="f" style={{marginTop:0}}><span className="lab">رقم الهوية / الإقامة <em>*</em></span>
+              <input className="inp" inputMode="numeric" value={c.idNumber} onChange={e=>setCf("idNumber",e.target.value.replace(/\D/g,""))} placeholder="10xxxxxxxx" /></label>
+            <label className="f" style={{marginTop:0}}><span className="lab">الجنسية</span>
+              <input className="inp" value={c.nationality} onChange={e=>setCf("nationality",e.target.value)} /></label>
+          </div>
+          <label className="f"><span className="lab">رقم الجوال <em>*</em></span>
+            <input className="inp" inputMode="tel" value={c.phone} onChange={e=>setCf("phone",e.target.value.replace(/[^\d+]/g,""))} placeholder="05xxxxxxxx" /></label>
+          {err && <div className="err">{err}</div>}
+          <div className="btnrow">
+            <button className="btn ghost" onClick={()=>setCstep(0)}>رجوع</button>
+            <button className="btn" onClick={cValidate}>التالي</button>
+          </div>
+        </div>
+      )}
+
+      {role==="client" && cstep===2 && (
+        <div className="card fade">
+          <div className="eyebrow">الخطوة ٢ من ٢</div>
+          <h1 className="h1">العقد والتوقيع</h1>
+          <p className="lead" style={{marginBottom:14}}>اقرأ العقد، ثم وقّع بإصبعك في الإطار.</p>
+          <ContractDoc r={r} c={c} apt={apt} nights={nights} total={total} />
+          <div style={{marginTop:16}}>
+            <span className="lab" style={{display:"block",fontSize:13,fontWeight:600}}>توقيع المستأجر</span>
+            <SignaturePad onChange={setSig} value={sig} />
+          </div>
+          <label className="agree">
+            <input type="checkbox" checked={agree} onChange={e=>setAgree(e.target.checked)} />
+            <span>أقرّ بصحة بياناتي، وأوافق على بنود هذا العقد، وأنه موقّع إلكترونياً ومُلزِم.</span>
+          </label>
+          {err && <div className="err">{err}</div>}
+          <div className="btnrow">
+            <button className="btn ghost" onClick={()=>setCstep(1)}>رجوع</button>
+            <button className="btn" onClick={submit}>توقيع وإرسال</button>
+          </div>
+        </div>
+      )}
+
+      {role==="client" && cstep===3 && (
+        <div className="card fade">
+          {status==="sending" && (<div className="done"><div className="spin"></div><h2>جارٍ إرسال العقد…</h2><p>لحظات بسيطة — لا تغلق الصفحة.</p></div>)}
+          {status==="done" && (
+            <div className="done">
+              <div className="checkc"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+              <h2>تم توقيع العقد وإرساله</h2>
+              <p>شكراً {(c.name||"").split(" ")[0]} 🌿 تم إرسال العقد الموقّع للمؤجّر، وبتوصلك نسختك منه قريباً.</p>
+            </div>
+          )}
+          {status==="error" && (
+            <div className="done">
+              <h2 style={{color:"#B23B3B"}}>تعذّر الإرسال</h2>
+              <p>صار خطأ أثناء الإرسال. تأكّد من اتصالك بالإنترنت وحاول مرة ثانية.</p>
+              <button className="btn" onClick={()=>{setCstep(2);setStatus("idle");}}>إعادة المحاولة</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {role==="host" && hstep===0 && (
+        <div className="note">كل عقد موقّع يصلك بصيغة <b>PDF</b> على إيميلك — بدون تخزين أي بيانات.</div>
+      )}
+
+      {/* نسخة العقد المخفية لتوليد الـ PDF */}
+      {role==="client" && (
+        <PrintableContract r={r} c={c} apt={apt} nights={nights} total={total} sig={sig} hostSig={hostSig} />
+      )}
+    </div>
+  );
+}
+
+function ContractDoc({r,c,apt,nights,total}){
+  return (
+    <div className="contract">
+      <h4>عقد إيجار وحدة سكنية مفروشة</h4>
+      <div className="ctr">تأجير قصير المدى — آثار العقارية</div>
+      <div className="prty"><div className="k">الطرف الأول (المؤجّر)</div>
+        <div className="v">{LESSOR.name} <span className="s">— {LESSOR.role}، جوال التواصل {LESSOR.phone}</span></div></div>
+      <div className="prty"><div className="k">الطرف الثاني (المستأجر)</div>
+        <div className="v">{c.name||"—"} <span className="s">— {c.idType} رقم {c.idNumber||"—"}</span></div>
+        <div className="v s">الجنسية: {c.nationality} — جوال: {c.phone||"—"}</div></div>
+      <p>اتفق الطرفان على تأجير الوحدة <span className="hl">{apt.name} رقم {apt.no}</span> الواقعة في {apt.city}،
+      لمدة <span className="hl">{nights||"—"} ليالٍ</span> ({RENT[r.type]})، من <span className="hl">{arDate(r.checkIn)}</span> إلى <span className="hl">{arDate(r.checkOut)}</span>،
+      بقيمة إجمالية قدرها <span className="hl">{fmt(total)} ريال</span>، ومبلغ تأمين مسترد قدره <span className="hl">{fmt(r.deposit)} ريال</span>، وفق البنود التالية:</p>
+      <ol>
+        <li>تُستخدم الوحدة للسكن فقط، ويُلتزم بعدد النزلاء المتفق عليه.</li>
+        <li>يُمنع التدخين داخل الوحدة وإقامة الحفلات والإخلال براحة الجيران.</li>
+        <li>يتحمّل المستأجر أي أضرار يتسبب بها، وتُخصم من مبلغ التأمين عند الاقتضاء.</li>
+        <li>التسليم الساعة ٣:٠٠ عصراً والإخلاء الساعة ١٢:٠٠ ظهراً ما لم يُتفق على غير ذلك.</li>
+        <li>يُعاد مبلغ التأمين خلال يوم عمل بعد المعاينة وعدم وجود أضرار.</li>
+        <li>يقرّ المستأجر بصحة بياناته وموافقته على توقيع العقد إلكترونياً.</li>
+      </ol>
+    </div>
+  );
+}
+
+function PrintableContract({r,c,apt,nights,total,sig,hostSig}){
+  return (
+    <div id="pdf-source">
+      <h3>عقد إيجار وحدة سكنية مفروشة</h3>
+      <div className="sub">تأجير قصير المدى — آثار العقارية</div>
+      <div className="pblock"><div className="k">الطرف الأول (المؤجّر)</div>
+        <div className="v">{LESSOR.name} <small>— {LESSOR.role}، جوال التواصل {LESSOR.phone}</small></div></div>
+      <div className="pblock"><div className="k">الطرف الثاني (المستأجر)</div>
+        <div className="v">{c.name||"—"} <small>— {c.idType} رقم {c.idNumber||"—"}</small></div>
+        <div className="v"><small>الجنسية: {c.nationality} — جوال: {c.phone||"—"}</small></div></div>
+      <p>اتفق الطرفان على تأجير الوحدة <b>{apt.name} رقم {apt.no}</b> الواقعة في {apt.city}، لمدة <b>{nights} ليالٍ</b> ({RENT[r.type]})،
+      من <b>{arDate(r.checkIn)}</b> إلى <b>{arDate(r.checkOut)}</b>، بقيمة إجمالية قدرها <b>{fmt(total)} ريال سعودي</b>،
+      ومبلغ تأمين مسترد قدره <b>{fmt(r.deposit)} ريال</b>، وفق البنود التالية:</p>
+      <ol>
+        <li>تُستخدم الوحدة للسكن فقط، ويُلتزم بعدد النزلاء المتفق عليه.</li>
+        <li>يُمنع التدخين داخل الوحدة وإقامة الحفلات والإخلال براحة الجيران.</li>
+        <li>يتحمّل المستأجر أي أضرار يتسبب بها، وتُخصم من مبلغ التأمين عند الاقتضاء.</li>
+        <li>التسليم الساعة ٣:٠٠ عصراً والإخلاء الساعة ١٢:٠٠ ظهراً ما لم يُتفق على غير ذلك.</li>
+        <li>يُعاد مبلغ التأمين خلال يوم عمل بعد المعاينة وعدم وجود أضرار.</li>
+        <li>يقرّ المستأجر بصحة بياناته وموافقته على توقيع هذا العقد إلكترونياً.</li>
+      </ol>
+      <div className="sgrow">
+        <div className="sg">{hostSig && <img src={hostSig} alt="" />}<div className="ln">{LESSOR.name}</div><div className="rl">المؤجّر</div></div>
+        <div className="sg">{sig && <img src={sig} alt="" />}<div className="ln">{c.name||"المستأجر"}</div><div className="rl">المستأجر</div></div>
+      </div>
+      <div className="pdfdate">حُرّر هذا العقد إلكترونياً بتاريخ {today()}</div>
+    </div>
+  );
+}
+
+function HostSignatureCard({sig,onChange}){
+  const [open,setOpen] = useState(!sig);
+  return (
+    <div className="hostsig">
+      <div className="hh" onClick={()=>setOpen(o=>!o)}>
+        <span>✍︎ توقيعي {sig ? "— ✓ محفوظ" : "— لم يُحفظ بعد"}</span><span>{open?"▴":"▾"}</span>
+      </div>
+      {open
+        ? <div className="hb fade"><p style={{fontSize:12.5,color:"#6B6A63",margin:"0 0 6px"}}>وقّع مرة واحدة — ويظهر توقيعك تلقائياً على كل عقد (محفوظ على جهازك).</p><SignaturePad onChange={onChange} value={sig} /></div>
+        : (sig && <div className="hb"><img src={sig} alt="" /></div>)}
+    </div>
+  );
+}
+
+function SignaturePad({onChange,value}){
+  const ref=useRef(null), drawing=useRef(false), has=useRef(false);
+  useEffect(()=>{ const cv=ref.current,dpr=window.devicePixelRatio||1,b=cv.getBoundingClientRect();
+    cv.width=b.width*dpr; cv.height=b.height*dpr; const ctx=cv.getContext("2d");
+    ctx.scale(dpr,dpr); ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=2.4; ctx.strokeStyle="#0E4D4A"; cv._ctx=ctx;
+    if(value){ const im=new Image(); im.onload=()=>ctx.drawImage(im,0,0,b.width,b.height); im.src=value; has.current=true; }
+  },[]);
+  const pos=e=>{ const b=ref.current.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-b.left,y:t.clientY-b.top}; };
+  const start=e=>{ e.preventDefault(); drawing.current=true; const p=pos(e); const ctx=ref.current._ctx; ctx.beginPath(); ctx.moveTo(p.x,p.y); };
+  const move=e=>{ if(!drawing.current)return; e.preventDefault(); const p=pos(e); const ctx=ref.current._ctx; ctx.lineTo(p.x,p.y); ctx.stroke(); has.current=true; };
+  const end=()=>{ if(!drawing.current)return; drawing.current=false; if(has.current) onChange(ref.current.toDataURL("image/png")); };
+  const clear=()=>{ const cv=ref.current; cv._ctx.clearRect(0,0,cv.width,cv.height); has.current=false; onChange(null); };
+  return (
+    <div>
+      <div className="sigwrap">
+        <canvas ref={ref} onMouseDown={start} onMouseMove={move} onMouseUp={end} onMouseLeave={end} onTouchStart={start} onTouchMove={move} onTouchEnd={end}></canvas>
+        <div className="line"></div>{!value && <div className="hint">وقّع هنا ✍︎</div>}
+      </div>
+      <div className="sigtools"><span style={{fontSize:12,color:"#9a9384"}}>{value?"✓ تم التوقيع":"بإصبعك أو بالماوس"}</span><button onClick={clear}>مسح</button></div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
